@@ -2,7 +2,6 @@
 
 namespace system\classes;
 
-use system\core\Errors;
 use Cfg;
 use system\core\PHP;
 
@@ -15,20 +14,6 @@ class LinkBuilder
   public const QUERY_APPEND = 0;
   public const QUERY_REMOVE = 1;
   public const QUERY_CUT = 0;
-
-  public static function addPrefix(string $lang = NULL)
-  {
-    $prefix = Cfg::$get->website['prefix'];
-    if (Cfg::$get->multilang) {
-      if (!is_null($lang)) {
-        return "$prefix/$lang";
-      } else {
-        return "$prefix/" . Cfg::$get->lang;
-      }
-    } else {
-      return $prefix;
-    }
-  }
 
   public static function url(string $controller, string $action, array $vars = [])
   {
@@ -63,12 +48,18 @@ class LinkBuilder
 
   }
 
-  public static function raw(string $url, string $lang = '')
+  public static function addPrefix(string $lang = NULL)
   {
+    $prefix = Cfg::$get->website['prefix'];
     if (Cfg::$get->multilang) {
-      $lang = (!empty($lang) ? $lang : Cfg::$get->lang) . (!empty($url) ? '/' : '');
+      if (!is_null($lang)) {
+        return "$prefix/$lang";
+      } else {
+        return "$prefix/" . Cfg::$get->lang;
+      }
+    } else {
+      return $prefix;
     }
-    return (Cfg::$get->website['prefix'] ? ('/' . Cfg::$get->website['prefix']) : '') . '/' . $lang . $url;
   }
 
   public static function redirect(string $url, string $lang = '')
@@ -77,25 +68,17 @@ class LinkBuilder
     die();
   }
 
+  public static function raw(string $url, string $lang = '')
+  {
+    if (Cfg::$get->multilang) {
+      $lang = (!empty($lang) ? $lang : Cfg::$get->lang) . (!empty($url) ? '/' : '');
+    }
+    return (Cfg::$get->website['prefix'] ? ('/' . Cfg::$get->website['prefix']) : '') . '/' . $lang . $url;
+  }
+
   public static function filterUrl(string $url)
   {
     return filter_var($url, FILTER_SANITIZE_ENCODED);
-  }
-
-  private static function completeQuery(array $get, string $url, int $position)
-  {
-    $built_query = http_build_query($get); // Собираем строку запроса из массива
-    $query = parse_url($url, PHP_URL_QUERY); // Получаем строку запроса из браузера
-    if ($query) { // Если строка запроса на странице присутствует, то нужно добавить к ней новую строку в нужное место
-      if ($position) {
-        $url .= "&$built_query";
-      } else {
-        $url = parse_url($url, PHP_URL_PATH) . "?$built_query&$query";
-      }
-    } else { // Иначе просто добавить к URL.
-      $url .= "?$built_query";
-    }
-    return $url;
   }
 
   public static function addGet(array $get, int $position = self::QUERY_END, int $mode = self::QUERY_REPLACE)
@@ -148,6 +131,22 @@ class LinkBuilder
           $url = substr($url, 0, -1);
         }
       }
+    }
+    return $url;
+  }
+
+  private static function completeQuery(array $get, string $url, int $position)
+  {
+    $built_query = http_build_query($get); // Собираем строку запроса из массива
+    $query = parse_url($url, PHP_URL_QUERY); // Получаем строку запроса из браузера
+    if ($query) { // Если строка запроса на странице присутствует, то нужно добавить к ней новую строку в нужное место
+      if ($position) {
+        $url .= "&$built_query";
+      } else {
+        $url = parse_url($url, PHP_URL_PATH) . "?$built_query&$query";
+      }
+    } else { // Иначе просто добавить к URL.
+      $url .= "?$built_query";
     }
     return $url;
   }

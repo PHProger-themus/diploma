@@ -8,6 +8,8 @@ use Attribute;
 class ToDatabase
 {
 
-    public function __construct(public $db) {}
+  public function __construct(public $db)
+  {
+  }
 
 }

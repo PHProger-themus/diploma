@@ -2,14 +2,13 @@
 
 namespace app\models;
 
+use Errors;
 use QueryBuilder;
-use Cfg;
-use View;
+use system\classes\ArrayHolder;
 use system\classes\LinkBuilder;
 use system\classes\SafetyManager;
 use system\classes\Server;
-use Errors;
-use system\classes\ArrayHolder;
+use View;
 
 class User extends QueryBuilder // Модель для работы с пользователем
 {
@@ -65,6 +64,12 @@ class User extends QueryBuilder // Модель для работы с поль�
     }
   }
 
+  private function backWithError(string $error)
+  {
+    View::setPopupMessage($error, Errors::ERROR); // Создаем окно с ошибкой и отправляем пользователя на форму
+    LinkBuilder::redirect('');
+  }
+
   public function logout() // Когда пользователь нажимает "Выход"
   {
     if (Server::issetSession('loggedIn')) { // Если он авторизован
@@ -72,12 +77,6 @@ class User extends QueryBuilder // Модель для работы с поль�
       Server::unsetSession(['loggedIn', 'user']);
       LinkBuilder::redirect(''); // Выход и перенаправление на форму
     }
-  }
-
-  private function backWithError(string $error)
-  {
-    View::setPopupMessage($error, Errors::ERROR); // Создаем окно с ошибкой и отправляем пользователя на форму
-    LinkBuilder::redirect('');
   }
 
 }

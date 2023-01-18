@@ -2,6 +2,6 @@
 
 return [
 
-    'wrap' => 'Из wrappera'
+  'wrap' => 'Из wrappera',
 
 ];

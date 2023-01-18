@@ -2,6 +2,6 @@
 
 return [
 
-    'wrap' => 'From wrapper'
+  'wrap' => 'From wrapper',
 
 ];

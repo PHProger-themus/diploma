@@ -17,55 +17,27 @@ class Router
     $this->routes = Cfg::$get->routes;
   }
 
-  private function notAvailableForAllIPs()
+  public function run()
   {
-    $IPs = Cfg::$get->allowedFor;
-    return !(count($IPs) == 1 && $IPs[0] == '*');
-  }
+    if ($this->match()) {
+      $controller = ucfirst($this->params['controller']) . 'Controller';
+      $controller_class = "\\app\\controllers\\$controller";
+      $action = $this->params['action'] . "Action";
 
-  private function maintenance()
-  {
-    if (!Cfg::$get->active && ($this->notAvailableForAllIPs() && !in_array($_SERVER['REMOTE_ADDR'], Cfg::$get->allowedFor))) {
-      Errors::renderPage('maintenance');
-    }
-  }
-
-  private function defineLocale(string $url, string $lang)
-  {
-    Cfg::$get->lang = $lang;
-    return substr($url, strlen($lang) + 2);
-  }
-
-  private function removeLocale(string $url)
-  {
-    if (Cfg::$get->multilang) {
-      $lang = (!empty($url) ? explode('/', $url)[1] : '');
-      if (isset(Cfg::$get->langs[$lang])) {
-        return $this->defineLocale($url, $lang);
+      if (!class_exists($controller_class)) {
+        throw new \Error("Не найден контроллер \"$controller\"");
+      } elseif (!method_exists($controller_class, $action)) {
+        throw new \Error("Не найден метод \"$action\" в контроллере \"$controller\"");
       } else {
-        // TODO: Wrong redirect work
-        LinkBuilder::redirect($url, Cfg::$get->lang);
+        $controller_object = new $controller_class();
+        if ($this->enabledAndNotRestricted() || $this->disabledAndUseFolder()) {
+          Lang::init($this->params['controller'] . '/' . $this->params['action']);
+        }
+        $controller_object->$action(ArrayHolder::new($this->vars), $this->getRulesResults($controller_object));
       }
+    } else {
+      Errors::code(404);
     }
-    return trim($url, '/');
-  }
-
-  private function getPrefix(string $config_prefix)
-  {
-    return (empty($config_prefix) || substr($config_prefix, 0, 1) === "/" ? $config_prefix : "/$config_prefix");
-  }
-
-  private function removePrefix(string $url)
-  {
-    $prefix = $this->getPrefix(Cfg::$get->website['prefix']);
-    if (!empty($prefix)) {
-      if (substr($url, 0, strlen($prefix)) === $prefix) {
-        $url = substr(Cfg::$get->url, strlen($prefix));
-      } else {
-        Errors::code(404);
-      }
-    }
-    return $url;
   }
 
   public function match()
@@ -107,27 +79,55 @@ class Router
     return false;
   }
 
-  public function run()
+  private function maintenance()
   {
-    if ($this->match()) {
-      $controller = ucfirst($this->params['controller']) . 'Controller';
-      $controller_class = "\\app\\controllers\\$controller";
-      $action = $this->params['action'] . "Action";
-
-      if (!class_exists($controller_class)) {
-        throw new \Error("Не найден контроллер \"$controller\"");
-      } elseif (!method_exists($controller_class, $action)) {
-        throw new \Error("Не найден метод \"$action\" в контроллере \"$controller\"");
-      } else {
-        $controller_object = new $controller_class();
-        if ($this->enabledAndNotRestricted() || $this->disabledAndUseFolder()) {
-          Lang::init($this->params['controller'] . '/' . $this->params['action']);
-        }
-        $controller_object->$action(ArrayHolder::new($this->vars), $this->getRulesResults($controller_object));
-      }
-    } else {
-      Errors::code(404);
+    if (!Cfg::$get->active && ($this->notAvailableForAllIPs() && !in_array($_SERVER['REMOTE_ADDR'], Cfg::$get->allowedFor))) {
+      Errors::renderPage('maintenance');
     }
+  }
+
+  private function notAvailableForAllIPs()
+  {
+    $IPs = Cfg::$get->allowedFor;
+    return !(count($IPs) == 1 && $IPs[0] == '*');
+  }
+
+  private function removePrefix(string $url)
+  {
+    $prefix = $this->getPrefix(Cfg::$get->website['prefix']);
+    if (!empty($prefix)) {
+      if (substr($url, 0, strlen($prefix)) === $prefix) {
+        $url = substr(Cfg::$get->url, strlen($prefix));
+      } else {
+        Errors::code(404);
+      }
+    }
+    return $url;
+  }
+
+  private function getPrefix(string $config_prefix)
+  {
+    return (empty($config_prefix) || substr($config_prefix, 0, 1) === "/" ? $config_prefix : "/$config_prefix");
+  }
+
+  private function removeLocale(string $url)
+  {
+    if (Cfg::$get->multilang) {
+      $lang = (!empty($url) ? explode('/', $url)[1] : '');
+      if (isset(Cfg::$get->langs[$lang])) {
+        return $this->defineLocale($url, $lang);
+      } else {
+        // TODO: Wrong redirect work
+        LinkBuilder::redirect($url, Cfg::$get->lang);
+      }
+    }
+    return trim($url, '/');
+  }
+
+  private function defineLocale(string $url, string $lang)
+  {
+    Cfg::$get->lang = $lang;
+    return substr($url, strlen($lang) + 2);
   }
 
   private function enabledAndNotRestricted()

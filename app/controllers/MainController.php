@@ -2,8 +2,9 @@
 
 namespace app\controllers;
 
-use system\core\Controller;
+use app\models\Product;
 use app\models\User;
+use system\core\Controller;
 
 class MainController extends Controller
 {
@@ -49,6 +50,8 @@ class MainController extends Controller
 
   public function productsAction()
   {
+    $product = new Product();
+    $product->get();
     $this->view->render();
   }
 

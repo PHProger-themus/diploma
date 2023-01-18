@@ -6,5 +6,5 @@ use Model;
 
 class Ajax extends Model
 {
-    //methods
+  //methods
 }

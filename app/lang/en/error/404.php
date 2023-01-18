@@ -2,6 +2,6 @@
 
 return [
 
-    'not_found' => 'Little page not found'
+  'not_found' => 'Little page not found',
 
 ];

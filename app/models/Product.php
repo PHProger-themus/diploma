@@ -40,10 +40,13 @@ class Product extends QueryBuilder // Модель для работы с пол
     return 'products';
   }
 
-  private function backWithError(string $error)
+  public function get(array $filters = [])
   {
-    View::setPopupMessage($error, Errors::ERROR); // Создаем окно с ошибкой и отправляем пользователя на форму
-    LinkBuilder::redirect('');
+    $query = $this->all();
+    foreach ($filters as $filter) {
+      $query->where($filter);
+    }
+    $this->backWithError('Error');
   }
 
 }

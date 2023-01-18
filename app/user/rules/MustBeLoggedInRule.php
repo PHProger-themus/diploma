@@ -2,11 +2,10 @@
 
 namespace app\user\rules;
 
-use Cfg;
-use system\classes\LinkBuilder;
-use View;
-use system\classes\Server;
 use Errors;
+use system\classes\LinkBuilder;
+use system\classes\Server;
+use View;
 
 class MustBeLoggedInRule
 {

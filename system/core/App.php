@@ -28,10 +28,11 @@ namespace system\core;
 class App
 {
 
-    public function __construct($config) {
-        foreach ($config as $key => $value) {
-            $this->$key = $value;
-        }
+  public function __construct($config)
+  {
+    foreach ($config as $key => $value) {
+      $this->$key = $value;
     }
+  }
 
 }

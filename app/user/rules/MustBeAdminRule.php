@@ -2,18 +2,18 @@
 
 namespace app\user\rules;
 
-use Cfg;
-use system\classes\LinkBuilder;
-use View;
-use system\classes\Server;
 use Errors;
+use system\classes\LinkBuilder;
+use system\classes\Server;
+use View;
 
 class MustBeAdminRule
 {
-    public function apply() {
-        if (Server::getSession('user')->status != 'admin') {
-			View::setPopupMessage("Доступ запрещен", Errors::ERROR);
-            LinkBuilder::redirect('dashboard');
-        }
+  public function apply()
+  {
+    if (Server::getSession('user')->status != 'admin') {
+      View::setPopupMessage("Доступ запрещен", Errors::ERROR);
+      LinkBuilder::redirect('dashboard');
     }
+  }
 }

@@ -1,60 +1,71 @@
 @font-face {
-  font-family: Rubik;
-  src: url(/coursach/app/files/fonts/Rubik-Regular.ttf);
+    font-family: Rubik;
+    src: url(/coursach/app/files/fonts/Rubik-Regular.ttf);
 }
+
 html {
-	height: calc(100% - 52px);
+    height: calc(100% - 52px);
 }
+
 body {
-  font-family: Rubik, sans-serif;
+    font-family: Rubik, sans-serif;
 }
 
 .btn-primary {
-	background: #fdb819;
+    background: #fdb819;
 }
+
 .btn-outline-primary, .text-primary {
-	color: #fdb819 !important;
+    color: #fdb819 !important;
 }
+
 .btn-primary, .btn-outline-primary, .form-control:focus {
-	border-color: #fdb819;
+    border-color: #fdb819;
 }
+
 a, .g-color-primary, .text-primary {
-	color: #fdb819 !important;
-	text-decoration: none;
-	transition: .3s;
+    color: #fdb819 !important;
+    text-decoration: none;
+    transition: .3s;
 }
+
 a:hover {
-	color: #ffd470 !important;
+    color: #ffd470 !important;
 }
+
 a svg {
-	width: 17px;
+    width: 17px;
     fill: #fff;
 }
+
 .btn-outline-primary:hover {
-	color: #fff !important;
+    color: #fff !important;
 }
+
 .btn-primary:hover,
 .btn-outline-primary:hover,
-.btn-check:active+.btn-primary,
-.btn-check:checked+.btn-primary,
+.btn-check:active + .btn-primary,
+.btn-check:checked + .btn-primary,
 .btn-primary.active,
 .btn-primary:active,
-.show>.btn-primary.dropdown-toggle,
-.btn-check:focus+.btn-primary,
+.show > .btn-primary.dropdown-toggle,
+.btn-check:focus + .btn-primary,
 .btn-primary:focus {
-	background: #ffd470;
-	border-color: #fdb819;
+    background: #ffd470;
+    border-color: #fdb819;
 }
-.btn-check:focus+.btn-primary,
+
+.btn-check:focus + .btn-primary,
 .btn-primary:focus,
-.btn-check:active+.btn-primary:focus,
-.btn-check:checked+.btn-primary:focus,
+.btn-check:active + .btn-primary:focus,
+.btn-check:checked + .btn-primary:focus,
 .btn-primary.active:focus,
 .btn-primary:active:focus,
-.show>.btn-primary.dropdown-toggle:focus,
+.show > .btn-primary.dropdown-toggle:focus,
 .form-control:focus {
-	box-shadow: 0 0 0 0.25rem rgb(253 184 25 / 50%);
+    box-shadow: 0 0 0 0.25rem rgb(253 184 25 / 50%);
 }
+
 .table-primary {
     --bs-table-bg: #fdb819;
     --bs-table-striped-bg: #fdb819;
@@ -65,28 +76,33 @@ a svg {
     --bs-table-hover-color: #000;
     color: #000;
     border-color: #fdb819;
-	font-weight: bold;
+    font-weight: bold;
 }
+
 .bg-light {
-	background: #f2f2f2;
+    background: #f2f2f2;
 }
+
 .text-left {
-	text-align: left !important;
+    text-align: left !important;
 }
+
 .badge {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 .input-group-m {
-	margin: 1%;
+    margin: 1%;
 }
+
 .block-center {
-	margin: 0 auto;
+    margin: 0 auto;
 }
 
 .text-right {
-	text-align: right;
+    text-align: right;
 }
+
 .g-width-100x {
-	width: 100% !important;
+    width: 100% !important;
 }
