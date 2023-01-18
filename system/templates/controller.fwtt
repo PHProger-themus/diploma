@@ -1,0 +1,12 @@
+<?php
+
+namespace app\controllers*NAMESPACE*;
+
+use system\core\Controller;
+
+class *NAME* extends Controller
+{
+
+
+
+}
