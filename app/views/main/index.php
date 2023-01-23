@@ -4,7 +4,7 @@ use system\classes\FormHelper;
 
 ?>
 <div class="col-sm-8 col-md-6 text-center block-center g-mt-50">
-  <h1 class="h2">My<strong class="text-primary">Stock</strong></h2>
+  <h1 class="h2">My<strong class="text-primary">Stock</strong></h1>
     <form method="post">
       <input type='hidden' name='_formName' value='login_form' />
       <div class="text-left col-8 col-xl-6 block-center">

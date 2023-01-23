@@ -34,6 +34,7 @@ return [
       'unify-components.css',
       'unify-globals.css',
       'style.css',
+      'font-awesome/fontawesome.css',
     ],
     'js' => [
       'bootstrap.bundle.min.js',

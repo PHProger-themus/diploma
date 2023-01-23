@@ -29,7 +29,7 @@ a, .g-color-primary, .text-primary {
     transition: .3s;
 }
 
-a:hover {
+a:not(.btn):hover {
     color: #ffd470 !important;
 }
 
@@ -38,7 +38,7 @@ a svg {
     fill: #fff;
 }
 
-.btn-outline-primary:hover {
+.btn-outline-primary:not(.btn):hover {
     color: #fff !important;
 }
 
@@ -105,4 +105,25 @@ a svg {
 
 .g-width-100x {
     width: 100% !important;
+}
+.pull-right {
+    float: right;
+}
+.g-bg-dark {
+    background: #222222 !important;
+}
+.product:hover {
+    box-shadow: 0 0 5px #fdb819;
+}
+.flex-basis-0 {
+    flex-basis: 0;
+}
+.g-left-0 {
+    left: 0 !important;
+}
+.g-right-0 {
+    right: 0 !important;
+}
+.reserve-block .position-absolute {
+    min-width: 200px;
 }

@@ -8,7 +8,7 @@ use system\classes\ArrayHolder;
 class Product extends QueryBuilder // Модель для работы с пользователем
 {
 
-  private $form;
+  private ArrayHolder $form;
 
   public function __construct(ArrayHolder $data = NULL)
   {
@@ -18,7 +18,8 @@ class Product extends QueryBuilder // Модель для работы с пол
     parent::__construct($data);
   }
 
-  public function rules() // Правила валидации. Логин и пароль - обязательные поля, минимум 3 символа
+  // Правила валидации. Логин и пароль - обязательные поля, минимум 3 символа
+  public function rules()
   {
     return [
       'name' => ['required'],
@@ -26,7 +27,8 @@ class Product extends QueryBuilder // Модель для работы с пол
     ];
   }
 
-  public function fields() // Названия полей (для ошибок валидации)
+  // Названия полей (для ошибок валидации)
+  public function fields()
   {
     return [
       'name' => 'Наименование',
@@ -35,18 +37,39 @@ class Product extends QueryBuilder // Модель для работы с пол
     ];
   }
 
-  public function table() // Таблица, с которой работает данная модель
+  // Таблица, с которой работает данная модель
+  public function table()
   {
     return 'products';
   }
 
-  public function get(array $filters = [])
+  /**
+   * Получить список товаров
+   * @param array $where [[field, value, sign?], [field, value, sign?], ...]
+   * @return array|false
+   */
+  public function get(array $where = [])
   {
     $query = $this->all();
-    foreach ($filters as $filter) {
-      $query->where($filter);
+    foreach ($where as $condition) {
+      $query->where($condition[0], $condition[1], $condition[2] ?? '=');
     }
-    $this->backWithError('Error');
+    $rows = $query->getRows();
+
+    foreach ($rows as &$row) {
+      $row->quantityColor = $this->getQuantityColor($row->quantity);
+      $row->reserve = $this->all([], 'reserve')->where('product_id', $row->ID)->getRows();
+      $row->reserveTotal = !empty($row->reserve) ? array_reduce($row->reserve, static fn($sum, $item) => $sum + $item->quantity) : 0;
+    }
+    return $rows;
+  }
+
+  public function getQuantityColor(int $quantity)
+  {
+    if (!$quantity) {
+      return 'g-color-red';
+    }
+    return 'g-color-green';
   }
 
 }

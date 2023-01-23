@@ -50,9 +50,10 @@ class MainController extends Controller
 
   public function productsAction()
   {
-    $product = new Product();
-    $product->get();
-    $this->view->render();
+    $products = new Product();
+    $this->view->render([
+      'products' => $products->get(),
+    ]);
   }
 
   public function logoutAction()
