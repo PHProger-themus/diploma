@@ -13,12 +13,28 @@ return [
     'controller' => 'main',
     'action' => 'dashboard',
   ],
-  'products' => [
-    'controller' => 'main',
-    'action' => 'products',
-  ],
   'logout' => [
     'controller' => 'main',
     'action' => 'logout',
+  ],
+
+  // Products
+  'products' => [
+    'controller' => 'product',
+    'action' => 'index',
+  ],
+
+  // Orders
+  'orders' => [
+    'controller' => 'order',
+    'action' => 'index',
+  ],
+  'orders/add' => [
+    'controller' => 'order',
+    'action' => 'create',
+  ],
+  'orders/{id}/remove' => [
+    'controller' => 'order',
+    'action' => 'remove',
   ],
 ];

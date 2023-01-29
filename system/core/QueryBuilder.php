@@ -95,11 +95,17 @@ abstract class QueryBuilder extends DB implements QueryBuilderInterface
     return $this;
   }
 
-  public function insert(array $values, string $table = NULL): void
+  /**
+   * @param array|ArrayHolder $values
+   * @param string|NULL $table
+   * @return void
+   */
+  public function insert($values, string $table = NULL): void
   {
+    $values = $values instanceof ArrayHolder ? ArrayHolder::old($values) : $values;
     $insert_data = "";
     foreach ($values as $column => $value) {
-      $insert_data .= (!empty($insert_data) ? ", " : "") . "$column = '$value'";
+      $insert_data .= (!empty($insert_data) ? ", " : "") . "$column = " . ($value === null ? "NULL" : "'$value'");
     }
     $this->query = 'INSERT INTO ' . $this->getTable($table) . ' SET ' . $insert_data;
     $this->execute();

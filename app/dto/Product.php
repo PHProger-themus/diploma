@@ -14,4 +14,9 @@ class Product
    */
   public $reserve;
   public int $reserveTotal;
+  /**
+   * @var Order[]
+   */
+  public $orders;
+  public int $ordersTotal;
 }

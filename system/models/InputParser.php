@@ -187,6 +187,21 @@ class InputParser
     }
   }
 
+  public function exists($value, $input_name, &$errors, $params)
+  {
+    if (!isset($params) || $this->isWrongArray($params)) {
+      $errors[$input_name] = $this->default_errors['undefined'];
+    } else {
+      $model = $params[0];
+      $column = $params[2] ?? $input_name;
+
+      $rows = $model->all([$column], ($params[1] ?? NULL))->where($column, $value)->rowsCount();
+      if (!$rows || empty($value)) {
+        $errors[$input_name] = $this->setErrorText($input_name, __FUNCTION__);
+      }
+    }
+  }
+
   private function isWrongArray($params)
   {
     return !is_array($params) || count($params) > 3 || !in_array('system\interfaces\QueryBuilderInterface', class_implements($params[0]));

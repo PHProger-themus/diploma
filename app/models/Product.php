@@ -46,30 +46,45 @@ class Product extends QueryBuilder // Модель для работы с пол
   /**
    * Получить список товаров
    * @param array $where [[field, value, sign?], [field, value, sign?], ...]
-   * @return array|false
+   * @return \app\dto\Product[]
    */
-  public function get(array $where = [])
+  public function get(array $where = []): array
   {
     $query = $this->all();
     foreach ($where as $condition) {
       $query->where($condition[0], $condition[1], $condition[2] ?? '=');
     }
+
+    /** @var \app\dto\Product[] $rows */
     $rows = $query->getRows();
 
     foreach ($rows as &$row) {
+      $productID = $row->ID;
       $row->quantityColor = $this->getQuantityColor($row->quantity);
-      $row->reserve = $this->all([], 'reserve')->where('product_id', $row->ID)->getRows();
-      $row->reserveTotal = !empty($row->reserve) ? array_reduce($row->reserve, static fn($sum, $item) => $sum + $item->quantity) : 0;
+      $row->reserve = $this->all([], 'reserve')->where('product_id', $productID)->getRows();
+      $row->reserveTotal = $this->getTotal($row->reserve);
+      $row->orders = $this->all([], 'orders')->where('product_id', $productID)->getRows();
+      $row->ordersTotal = $this->getTotal($row->orders);
     }
     return $rows;
   }
 
-  public function getQuantityColor(int $quantity)
+  public function getQuantityColor(int $quantity): string
   {
     if (!$quantity) {
       return 'g-color-red';
     }
     return 'g-color-green';
+  }
+
+  /**
+   * Количество сущностей. Массив должен иметь сущности со свойством quantity.
+   * @param array $array
+   * @return int
+   */
+  private function getTotal(array $array): int
+  {
+    return !empty($array) ? array_reduce($array, static fn($sum, $item) => $sum + $item->quantity) : 0;
   }
 
 }

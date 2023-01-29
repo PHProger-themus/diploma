@@ -57,7 +57,6 @@ class Model
 
     $this->destroyFormSession();
     return true;
-
   }
 
   private function checkCSRF()
@@ -198,6 +197,19 @@ class Model
   {
     View::setPopupMessage($error, Errors::ERROR); // Создаем окно с ошибкой и отправляем пользователя на форму
     LinkBuilder::redirect(str_replace(Server::getProtocol() . '://' . $_SERVER['HTTP_HOST'] . '/', '', $_SERVER['HTTP_REFERER']));
+  }
+
+  /**
+   * Убирает из формы сервисные поля
+   * @param $form ArrayHolder | array
+   * @return array
+   */
+  public function clearForm($form): ArrayHolder {
+    return ArrayHolder::new(array_filter(
+      $form instanceof ArrayHolder ? ArrayHolder::old($form) : $form,
+      fn($field) => $this->notServiceField($field),
+      ARRAY_FILTER_USE_KEY
+    ));
   }
 
 }

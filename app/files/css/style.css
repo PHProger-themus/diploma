@@ -91,10 +91,6 @@ a svg {
     cursor: pointer;
 }
 
-.input-group-m {
-    margin: 1%;
-}
-
 .block-center {
     margin: 0 auto;
 }
@@ -126,4 +122,11 @@ a svg {
 }
 .reserve-block .position-absolute {
     min-width: 200px;
+}
+
+.tooltip-inner {
+    background-color: #8f8f8f;
+}
+.tooltip-arrow::before {
+    border-top-color: #8f8f8f !important;
 }

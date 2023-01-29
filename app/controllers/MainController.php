@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\models\Product;
 use app\models\User;
 use system\core\Controller;
 
@@ -29,7 +28,7 @@ class MainController extends Controller
       $validator = new User($this->post());
       $validator->login();
     } else {
-      $this->view->render();
+      $this->render();
     }
   }
 
@@ -45,15 +44,7 @@ class MainController extends Controller
 
   public function dashboardAction()
   {
-    $this->view->render();
-  }
-
-  public function productsAction()
-  {
-    $products = new Product();
-    $this->view->render([
-      'products' => $products->get(),
-    ]);
+    $this->render();
   }
 
   public function logoutAction()

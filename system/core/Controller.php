@@ -7,12 +7,14 @@ use system\classes\ArrayHolder;
 abstract class Controller
 {
 
+  private $COMMON;
   protected View $view;
   private ?ArrayHolder $get = NULL;
   private ?ArrayHolder $post = NULL;
 
-  public function __construct()
+  public function __construct($COMMON)
   {
+    $this->COMMON = $COMMON;
     $this->view = new View();
     if (!empty($_GET)) {
       $this->get = ArrayHolder::new($_GET);
@@ -20,6 +22,11 @@ abstract class Controller
     if (!empty($_POST)) {
       $this->post = ArrayHolder::new($_POST);
     }
+  }
+
+  protected function render($vars = [])
+  {
+    $this->view->render(array_merge($vars, ['COMMON' => $this->COMMON]));
   }
 
   /**

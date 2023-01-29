@@ -29,7 +29,7 @@ class Router
       } elseif (!method_exists($controller_class, $action)) {
         throw new \Error("Не найден метод \"$action\" в контроллере \"$controller\"");
       } else {
-        $controller_object = new $controller_class();
+        $controller_object = new $controller_class(require(APP_DIR . '/common.php'));
         if ($this->enabledAndNotRestricted() || $this->disabledAndUseFolder()) {
           Lang::init($this->params['controller'] . '/' . $this->params['action']);
         }
