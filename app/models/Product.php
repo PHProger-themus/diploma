@@ -69,6 +69,15 @@ class Product extends QueryBuilder // Модель для работы с пол
     return $rows;
   }
 
+  public function reserve(int $productId, string $company, int $quantity)
+  {
+    $this->insert([
+      'product_id' => $productId,
+      'company_name' => $company,
+      'quantity' => $quantity
+    ], 'reserve');
+  }
+
   public function getQuantityColor(int $quantity): string
   {
     if (!$quantity) {

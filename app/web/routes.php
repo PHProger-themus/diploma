@@ -37,4 +37,9 @@ return [
     'controller' => 'order',
     'action' => 'remove',
   ],
+
+  'ajax' => [
+    'controller' => 'ajax',
+    'action' => 'index',
+  ]
 ];

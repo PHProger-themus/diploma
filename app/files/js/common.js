@@ -1,3 +1,36 @@
+let modals = {
+  'reserve': ({
+    'title': 'Резервирование товара',
+    'action': (data) => {
+      const company = $('#modalCompany').val(), quantity = $('#modalQuantity').val()
+      if (company && quantity) {
+        $.ajax({
+          url: '/ajax',
+          method: 'POST',
+          data: {
+            action: 'reserveFor',
+            productId: data.productId,
+            company, quantity,
+          },
+          beforeSend: () => modalLoading('show'),
+          success: () => {
+            modalLoading('hide')
+            $('#modal').modal('hide')
+          }
+        });
+      }
+    },
+    'button': 'Зарезервировать',
+    'body': (data) => `<p class='g-mb-8'>Зарезервируйте товар, указав наименование физ. лица или юр. лица и количество товара.</p>
+        <form data-reserveFor='${data.productId}'>
+          <label for='name'>Наименование <span class='g-color-red'>*</span></label>
+          <input type='text' class='form-control g-mb-8' id='modalCompany' name='name' />
+          <label for='quantity'>Количество <span class='g-color-red'>*</span></label>
+          <input type='number' class='form-control' id='modalQuantity' name='quantity' />
+        </form>`
+  }),
+}
+
 let eventTargetUrl = ''
 let proceedDeleting = () => {
   document.location.href = eventTargetUrl
@@ -53,12 +86,22 @@ $(function () {
   })
 })
 
-function showModal(title, body, button = {text: 'Сохранить', action: '', color: 'btn-primary'}) {
-  $('#modal #modalTitle').text(title)
-  $('#modal #modalBody').html(body)
-  const buttonElement = $('#modal #modalProceed')
-  buttonElement.text(button.text)
-  buttonElement.attr('onclick', button.action)
-  buttonElement.addClass(button.color)
-  $('#modal').modal('show')
+function showModal(modal, bodyData) {
+  const modalData = modals[modal];
+  if (modalData['body']) {
+    $('#modal #modalTitle').text(modalData.title || 'Действие')
+    $('#modal #modalBody').html(modalData.body(bodyData))
+    const buttonElement = $('#modal #modalProceed')
+    buttonElement.html((modalData.button || 'Сохранить') + "<i class='fa fa-spinner fa-spin g-ml-5 d-none'></i>")
+    modalData.action && buttonElement.click(modalData.action.bind(null, bodyData));
+    buttonElement.addClass(modalData.buttonColor || 'btn-primary')
+    $('#modal').modal('show')
+  } else {
+    console.error('Для показа модального окна требуется содержимое (свойство body в объекте модальных окон)')
+  }
+}
+
+function modalLoading(action) {
+  const method = action === 'show' ? 'removeClass' : 'addClass';
+  $('#modalProceed i.fa-spinner')[method]('d-none');
 }

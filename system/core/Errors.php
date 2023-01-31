@@ -17,10 +17,12 @@ abstract class Errors
     die();
   }
 
-  public static function code($response_code): void
+  public static function code($response_code, $render = true): void
   {
     http_response_code($response_code);
-    self::renderPage($response_code);
+    if ($render) {
+      self::renderPage($response_code);
+    }
   }
 
   public static function renderPage(string $page)
