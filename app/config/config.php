@@ -19,14 +19,14 @@ return [
 
   //Массив данных вебсайта
   'website' => [
-    'prefix' => '',
+    'prefix' => 'diploma',
     'root' => HOME_DIR,
-    'img' => 'app/files/images',
+    'img' => '/app/files/images',
   ],
 
   //CSS и JS файлы, их местоположение, кеширование
-  'cssFolder' => 'app/files/css',
-  'jsFolder' => 'app/files/js',
+  'cssFolder' => '/app/files/css',
+  'jsFolder' => '/app/files/js',
   'disableCache' => false,
   'links' => [
     'css' => [

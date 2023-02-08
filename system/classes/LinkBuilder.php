@@ -73,7 +73,11 @@ class LinkBuilder
     if (Cfg::$get->multilang) {
       $lang = (!empty($lang) ? $lang : Cfg::$get->lang) . (!empty($url) ? '/' : '');
     }
-    return (Cfg::$get->website['prefix'] ? ('/' . Cfg::$get->website['prefix']) : '') . '/' . $lang . $url;
+    return (
+      Cfg::$get->website['prefix'] && strpos($url, Cfg::$get->website['prefix']) === false
+        ? ('/' . Cfg::$get->website['prefix'])
+        : ''
+      ) . '/' . $lang . $url;
   }
 
   public static function filterUrl(string $url)

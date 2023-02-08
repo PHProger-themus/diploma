@@ -35,10 +35,10 @@ use system\classes\LinkBuilder;
         </div>
       </div>
       <div class="buttons col-2 text-right">
-        <a href="#" class="btn btn-outline-primary g-color-white g-color-black--hover" data-toggle="tooltip" title="Редактировать">
+        <a href="/<?= LinkBuilder::url('order', 'update', ['url' => ['id' => $order->ID]]) ?>" class="btn btn-outline-primary g-color-white g-color-black--hover" data-toggle="tooltip" title="Редактировать">
           <i class="fa fa-pen"></i>
         </a>
-        <a href="/<?= LinkBuilder::url('order', 'remove', ['url' => ['id' => $order->ID]]) ?>" class="btn btn-primary g-color-white g-color-black--hover" data-toggle="tooltip" title="Удалить">
+        <a href="/<?= LinkBuilder::url('order', 'remove', ['url' => ['id' => $order->ID]]) ?>" data-delete class="btn btn-primary g-color-white g-color-black--hover" data-toggle="tooltip" title="Удалить">
           <i class="fa fa-trash"></i>
         </a>
       </div>

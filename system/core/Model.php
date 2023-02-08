@@ -193,10 +193,16 @@ class Model
     return [];
   }
 
-  public function backWithError(string $error)
+  public function backWithError(string $error, string $defaultUrl = '')
   {
     View::setPopupMessage($error, Errors::ERROR); // Создаем окно с ошибкой и отправляем пользователя на форму
-    LinkBuilder::redirect(str_replace(Server::getProtocol() . '://' . $_SERVER['HTTP_HOST'] . '/', '', $_SERVER['HTTP_REFERER']));
+    $referer = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $defaultUrl;
+    LinkBuilder::redirect(
+      str_replace(
+        Server::getProtocol() . '://' . $_SERVER['HTTP_HOST'] . '/' .
+        (Cfg::$get->website['prefix'] ? Cfg::$get->website['prefix'] . '/' : ''), '', $referer
+      )
+    );
   }
 
   /**

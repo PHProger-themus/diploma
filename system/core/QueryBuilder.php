@@ -111,11 +111,17 @@ abstract class QueryBuilder extends DB implements QueryBuilderInterface
     $this->execute();
   }
 
-  public function update(array $values, string $table = NULL): self
+  /**
+   * @param array|ArrayHolder $values
+   * @param string|NULL $table
+   * @return self
+   */
+  public function update($values, string $table = NULL): self
   {
+    $values = $values instanceof ArrayHolder ? ArrayHolder::old($values) : $values;
     $update_data = "";
     foreach ($values as $column => $value) {
-      $update_data .= (!empty($update_data) ? ", " : "") . "$column = '$value'";
+      $update_data .= (!empty($update_data) ? ", " : "") . "$column = " . ($value === null ? "NULL" : "'$value'");
     }
     $this->query = 'UPDATE ' . $this->getTable($table) . ' SET ' . $update_data;
     return $this;

@@ -4,12 +4,11 @@ namespace app\models;
 
 use QueryBuilder;
 use system\classes\ArrayHolder;
-use system\classes\FormHelper;
 use system\classes\LinkBuilder;
 use system\core\Errors;
 use system\core\View;
 
-class Order extends QueryBuilder // Модель для работы с пользователем
+class Reserve extends QueryBuilder // Модель для работы с пользователем
 {
 
   private ArrayHolder $form;
@@ -29,6 +28,7 @@ class Order extends QueryBuilder // Модель для работы с поль
   {
     return [
       'product' => ['required', 'exists' => ['values' => [$this, 'products', 'ID']]],
+      'company_name' => ['required'],
       'quantity' => ['required', 'isNumber'],
     ];
   }
@@ -38,7 +38,7 @@ class Order extends QueryBuilder // Модель для работы с поль
   {
     return [
       'product' => 'Товар',
-      'quantity' => 'Кол-во',
+      'quantity' => 'Наименование компании',
       'packed' => 'Упаковано',
     ];
   }
@@ -46,13 +46,13 @@ class Order extends QueryBuilder // Модель для работы с поль
   // Таблица, с которой работает данная модель
   public function table()
   {
-    return 'orders';
+    return 'reserve';
   }
 
   /**
-   * Получить список товаров
+   * Получить список резервов
    * @param array $where [[field, value, sign?], [field, value, sign?], ...]
-   * @return \app\dto\Product[]
+   * @return \app\dto\Reserve[]
    */
   public function get(array $where = []): array
   {
@@ -61,7 +61,7 @@ class Order extends QueryBuilder // Модель для работы с поль
       $query->where($condition[0], $condition[1], $condition[2] ?? '=');
     }
 
-    /** @var \app\dto\Order[] $rows */
+    /** @var \app\dto\Reserve[] $rows */
     $rows = $query->getRows();
 
     foreach ($rows as &$row) {
@@ -71,42 +71,13 @@ class Order extends QueryBuilder // Модель для работы с поль
     return $rows;
   }
 
-  public function create()
-  {
-    if ($this->correct()) {
-      $this->processPost();
-      $this->insert($this->cleanForm);
-      LinkBuilder::redirect('orders');
-    } else {
-      $this->backWithError(implode(', ', $this->getErrors()));
-    }
-  }
-
-  public function edit(int $id)
-  {
-    if ($this->correct()) {
-      $this->processPost();
-      $this->update($this->cleanForm)->where('ID', $id)->execute();
-      LinkBuilder::redirect('orders');
-    } else {
-      $this->backWithError(implode(', ', $this->getErrors()));
-    }
-  }
-
-  private function processPost()
-  {
-    $this->cleanForm->product_id = (int)$this->cleanForm->product;
-    unset($this->cleanForm->product);
-    $this->cleanForm->packed = $this->cleanForm->packed ?: null;
-  }
-
   public function remove($id)
   {
     if (!empty($this->get([['ID', $id]]))) {
       $this->delete()->where('ID', $id)->execute();
-      View::setPopupMessage("Заказ удален");
+      View::setPopupMessage("Запись удалена из резерва");
     } else {
-      View::setPopupMessage("Заказа с данным ID не существует", Errors::ERROR);
+      View::setPopupMessage("Записи с данным ID нет в резерве", Errors::ERROR);
     }
   }
 }

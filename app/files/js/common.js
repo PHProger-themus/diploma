@@ -1,11 +1,16 @@
+let eventTargetUrl = ''
+let proceedDeleting = () => {
+  document.location.href = eventTargetUrl
+  $('#modal').modal('hide')
+}
 let modals = {
-  'reserve': ({
+  'reserve': {
     'title': 'Резервирование товара',
     'action': (data) => {
       const company = $('#modalCompany').val(), quantity = $('#modalQuantity').val()
       if (company && quantity) {
         $.ajax({
-          url: '/ajax',
+          url: '/diploma/ajax',
           method: 'POST',
           data: {
             action: 'reserveFor',
@@ -17,7 +22,7 @@ let modals = {
             modalLoading('hide')
             $('#modal').modal('hide')
           }
-        });
+        })
       }
     },
     'button': 'Зарезервировать',
@@ -28,13 +33,15 @@ let modals = {
           <label for='quantity'>Количество <span class='g-color-red'>*</span></label>
           <input type='number' class='form-control' id='modalQuantity' name='quantity' />
         </form>`
-  }),
-}
+  },
 
-let eventTargetUrl = ''
-let proceedDeleting = () => {
-  document.location.href = eventTargetUrl
-  $('#modal').modal('hide')
+  'delete': {
+    'title': 'Подтвердите удаление',
+    'action': proceedDeleting,
+    'button': 'Удалить',
+    'buttonColor': 'btn-danger',
+    'body': () => `<p class="m-0">Вы действительно хотите удалить запись?</p>`
+  }
 }
 
 $(function () {
@@ -42,14 +49,10 @@ $(function () {
     'delay': {show: 400, hide: 100}
   })
 
-  $(document).on('click', "a[data-bs-original-title='Удалить']", function (e) {
+  $(document).on('click', "a[data-delete]", function (e) {
     e.preventDefault()
     eventTargetUrl = e.target.closest('a').getAttribute('href')
-    showModal('Подтвердите удаление', '<p class="m-0">Вы действительно хотите удалить запись?</p>', {
-      text: 'Удалить',
-      action: 'proceedDeleting()',
-      color: 'btn-danger',
-    })
+    showModal('delete')
   })
 
   // Показ блоков с резервом
@@ -87,13 +90,13 @@ $(function () {
 })
 
 function showModal(modal, bodyData) {
-  const modalData = modals[modal];
+  const modalData = modals[modal]
   if (modalData['body']) {
     $('#modal #modalTitle').text(modalData.title || 'Действие')
     $('#modal #modalBody').html(modalData.body(bodyData))
     const buttonElement = $('#modal #modalProceed')
     buttonElement.html((modalData.button || 'Сохранить') + "<i class='fa fa-spinner fa-spin g-ml-5 d-none'></i>")
-    modalData.action && buttonElement.click(modalData.action.bind(null, bodyData));
+    modalData.action && buttonElement.click(modalData.action.bind(null, bodyData))
     buttonElement.addClass(modalData.buttonColor || 'btn-primary')
     $('#modal').modal('show')
   } else {
@@ -102,6 +105,6 @@ function showModal(modal, bodyData) {
 }
 
 function modalLoading(action) {
-  const method = action === 'show' ? 'removeClass' : 'addClass';
-  $('#modalProceed i.fa-spinner')[method]('d-none');
+  const method = action === 'show' ? 'removeClass' : 'addClass'
+  $('#modalProceed i.fa-spinner')[method]('d-none')
 }

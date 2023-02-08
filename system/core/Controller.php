@@ -44,7 +44,7 @@ abstract class Controller
    */
   protected function isGet(): bool
   {
-    return $_SERVER['REQUEST_METHOD'] == 'GET';
+    return $_SERVER['REQUEST_METHOD'] === 'GET';
   }
 
   protected function get($key = NULL)
@@ -52,7 +52,7 @@ abstract class Controller
     if (is_null($key)) {
       return $this->view->processValue($this->get);
     }
-    return $this->view->processValue($this->get->$key);
+    return $this->view->processValue($this->get ? $this->get->$key : NULL);
   }
 
   protected function post($key = NULL)
@@ -60,7 +60,7 @@ abstract class Controller
     if (is_null($key)) {
       return $this->view->processValue($this->post);
     }
-    return $this->view->processValue($this->post->$key);
+    return $this->view->processValue($this->post ? $this->post->$key : NULL);
   }
 
   protected function issetPost($key)

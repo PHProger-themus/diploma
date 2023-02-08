@@ -33,8 +33,18 @@ return [
     'controller' => 'order',
     'action' => 'create',
   ],
+  'orders/{id}/edit' => [
+    'controller' => 'order',
+    'action' => 'update',
+  ],
   'orders/{id}/remove' => [
     'controller' => 'order',
+    'action' => 'remove',
+  ],
+
+  // Reserve
+  'reserve/{id}/remove' => [
+    'controller' => 'reserve',
     'action' => 'remove',
   ],
 
