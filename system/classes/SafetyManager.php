@@ -10,13 +10,10 @@ class SafetyManager
   public static function generateRandomString(int $size = 10, bool $with_characters = false): ?string
   {
     $characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    if ($with_characters) $characters .= "-_+=?|@#$%^&*()[]{}:";
-    $charactersLength = strlen($characters);
-    $randomString = NULL;
-    for ($i = 0; $i < $size; $i++) {
-      $randomString .= $characters[rand(0, $charactersLength - 1)];
+    if ($with_characters) {
+      $characters .= "-_+=?|@#$%^&*()[]{}:";
     }
-    return $randomString;
+    return substr(str_shuffle($characters), 0, $size);
   }
 
   /**

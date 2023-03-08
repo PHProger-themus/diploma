@@ -60,7 +60,7 @@ abstract class Controller
     if (is_null($key)) {
       return $this->view->processValue($this->post);
     }
-    return $this->view->processValue($this->post ? $this->post->$key : NULL);
+    return $this->view->processValue($this->post ? (property_exists($this->post, $key) ? $this->post->$key : NULL) : NULL);
   }
 
   protected function issetPost($key)

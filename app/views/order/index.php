@@ -23,6 +23,8 @@ use system\classes\LinkBuilder;
         <p class="m-0 g-font-weight-100">Упаковано:
           <span class="g-color-vine g-font-size-15 g-font-weight-500"><?= $order->packed ? (new DateTime($order->packed))->format('d.m.Y') : '-' ?></span>
           <i class="fa-bars-staggered fa-solid g-cursor-pointer g-ml-7" data-toggle="tooltip" title="Лог событий"></i>
+          <i class="fa-solid g-ml-10 g-mr-3 <?= $order->client ? 'fa-user' : 'fa-warehouse' ?>"></i>
+          <span><?= $order->client ? $order->client->name : 'на склад' ?></span>
         </p>
       </div>
       <div class="col-3 row align-items-center">

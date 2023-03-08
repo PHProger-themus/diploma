@@ -87,6 +87,11 @@ $(function () {
       }, 200)
     }
   })
+
+  $('#to_warehouse_checkbox').on('click', function (e) {
+    $('#to_client_block')[$(this).prop('checked') ? 'addClass' : 'removeClass']('g-opacity-0_4')
+    $('#to_client_block input').prop('disabled', $(this).prop('checked'))
+  })
 })
 
 function showModal(modal, bodyData) {

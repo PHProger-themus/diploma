@@ -42,6 +42,10 @@ a svg {
     color: #fff !important;
 }
 
+.g-brd-primary {
+    border-color: #fdb819 !important;
+}
+
 .btn-primary:hover,
 .btn-outline-primary:hover,
 .btn-check:active + .btn-primary,

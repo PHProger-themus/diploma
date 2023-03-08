@@ -11,7 +11,7 @@ return [
         'password' => 'root',
         'database' => 'diploma',
         'prefix' => 'd_',
-        'trusted_tables' => ['users', 'products', 'orders', 'reserve', 'plans', 'comments'],
+        'trusted_tables' => ['users', 'products', 'orders', 'reserve', 'plans', 'comments', 'clients'],
       ],
     ],
     'useAttributes' => false, // TODO: remove this opportunity as it's inconvenient

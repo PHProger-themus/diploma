@@ -2,17 +2,18 @@
 
 namespace app\models;
 
-use QueryBuilder;
+use system\core\QueryBuilder;
 use system\classes\ArrayHolder;
-use system\classes\FormHelper;
 use system\classes\LinkBuilder;
 use system\core\Errors;
 use system\core\View;
+use app\dto\Client;
 
 class Order extends QueryBuilder // Модель для работы с пользователем
 {
 
   private ArrayHolder $form;
+  /** @var mixed */
   private ArrayHolder $cleanForm;
 
   public function __construct(ArrayHolder $data = null)
@@ -28,6 +29,9 @@ class Order extends QueryBuilder // Модель для работы с поль
   public function rules()
   {
     return [
+      'to_client' => ['required' => ['if' => function () {
+        return true;
+      }]],
       'product' => ['required', 'exists' => ['values' => [$this, 'products', 'ID']]],
       'quantity' => ['required', 'isNumber'],
     ];
@@ -37,6 +41,7 @@ class Order extends QueryBuilder // Модель для работы с поль
   public function fields()
   {
     return [
+      'to_client' => 'Заказчику',
       'product' => 'Товар',
       'quantity' => 'Кол-во',
       'packed' => 'Упаковано',
@@ -65,8 +70,11 @@ class Order extends QueryBuilder // Модель для работы с поль
     $rows = $query->getRows();
 
     foreach ($rows as &$row) {
-      $productID = $row->product_id;
-      $row->product = $this->all([], 'products')->where('ID', $productID)->getRow();
+      $row->product = $this->all([], 'products')->where('ID', $row->product_id)->getRow();
+      $row->client = $row->client_id ? $this->all([], 'clients')->where('ID', $row->client_id)->getRow() : NULL;
+      if ($row->client) {
+        $row->client->name = htmlspecialchars_decode(htmlspecialchars_decode($row->client->name));
+      }
     }
     return $rows;
   }
@@ -98,6 +106,20 @@ class Order extends QueryBuilder // Модель для работы с поль
     $this->cleanForm->product_id = (int)$this->cleanForm->product;
     unset($this->cleanForm->product);
     $this->cleanForm->packed = $this->cleanForm->packed ?: null;
+    if (!$this->cleanForm->to_warehouse) {
+      /** @var Client */
+      $client = $this->all([], 'clients')->where('name', $this->cleanForm->to_client)->getRow();
+      if (!$client) {
+        $this->insert(['name' => $this->cleanForm->to_client], 'clients');
+        $this->cleanForm->client_id = $this->getLastInsertId();
+      } else {
+        $this->cleanForm->client_id = $client->id;
+      }
+    } else {
+      $this->cleanForm->client_id = NULL;
+    }
+    unset($this->cleanForm->to_warehouse);
+    unset($this->cleanForm->to_client);
   }
 
   public function remove($id)

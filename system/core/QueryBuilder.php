@@ -40,6 +40,11 @@ abstract class QueryBuilder extends DB implements QueryBuilderInterface
     return NULL;
   }
 
+  public function exists(string $query = NULL)
+  {
+    return !empty($this->getRowsAsArray($query));
+  }
+
   public function all(array $columns = [], string $table = NULL, bool $distinct = false): self
   {
     $this->query = 'SELECT' . ($distinct ? ' DISTINCT' : '') . $this->columnsToString($columns) . ' FROM ' . $this->getTable($table);

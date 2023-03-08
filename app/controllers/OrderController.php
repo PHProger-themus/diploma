@@ -30,7 +30,9 @@ class OrderController extends Controller
   {
     $products = new Product();
     if ($this->isPost()) {
-      $orders = new Order($this->post());
+      $data = $this->post();
+      $data->to_warehouse = (bool)$this->post('to_warehouse');
+      $orders = new Order($data);
       $orders->create();
     } else {
       $this->render([
@@ -47,7 +49,9 @@ class OrderController extends Controller
   {
     $products = new Product();
     if ($this->isPost()) {
-      $orders = new Order($this->post());
+      $data = $this->post();
+      $data->to_warehouse = (bool)$this->post('to_warehouse');
+      $orders = new Order($data);
       $orders->edit($vars->id);
     } else {
       $orders = new Order();
