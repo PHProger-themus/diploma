@@ -39,6 +39,8 @@ return [
     'js' => [
       'bootstrap.bundle.min.js',
       'jquery-3.6.0.min.js',
+      'rxjs.umd.min.js',
+      'rxjs.extensions.js',
       'common.js',
     ],
   ],

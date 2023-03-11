@@ -10,6 +10,8 @@ use system\interfaces\QueryBuilderInterface;
 abstract class QueryBuilder extends DB implements QueryBuilderInterface
 {
 
+  private $applyFn = null;
+
   public function getRows(string $query = NULL)
   {
     $rows = $this->getRowsAsArray($query);
@@ -23,7 +25,10 @@ abstract class QueryBuilder extends DB implements QueryBuilderInterface
   {
     $sth = $this->execute($query);
     $rows = $sth->fetchAll(PDO::FETCH_ASSOC);
-    foreach ($rows as &$data) {
+    foreach ($rows as &$data) {   
+      if ($this->applyFn) {
+        $data = ($this->applyFn)($data);
+      }
       foreach ($data as &$value) {
         $value = (!is_null($value) ? SafetyManager::filterString($value) : $value);
       }
@@ -205,6 +210,11 @@ abstract class QueryBuilder extends DB implements QueryBuilderInterface
   public function rowsCount(string $query = NULL): int
   {
     return count($this->getRowsAsArray($query));
+  }
+
+  public function withEachRow($fn) {
+    $this->applyFn = $fn;
+    return $this;
   }
 
 }

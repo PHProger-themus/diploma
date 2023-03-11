@@ -134,3 +134,18 @@ a svg {
 .tooltip-arrow::before {
     border-top-color: #8f8f8f !important;
 }
+
+[bgchar-dropdown] {
+    position: relative;
+}
+[bgchar-dropdown] ul {
+    width: calc(100% - 24px);
+    list-style-type: none;
+}
+[bgchar-dropdown] li {
+    padding: 3px 10px;
+}
+[bgchar-dropdown] li:hover {
+    background: #fdb819;
+    color: #000;
+}

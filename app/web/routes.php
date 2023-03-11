@@ -48,8 +48,9 @@ return [
     'action' => 'remove',
   ],
 
-  'ajax' => [
+  // Ajax API
+  'clients' => [
     'controller' => 'ajax',
-    'action' => 'index',
+    'action' => 'clients',
   ]
 ];

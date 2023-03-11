@@ -22,6 +22,7 @@ use system\classes\Server;
   <?= $page->alternate ?>
   <?= $page->css ?>
   <?= $page->js ?>
+  <script src='/diploma/app/files/js/dropdown.js' defer></script>
   <script src='https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js'></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
 </head>

@@ -52,7 +52,7 @@ abstract class Controller
     if (is_null($key)) {
       return $this->view->processValue($this->get);
     }
-    return $this->view->processValue($this->get ? $this->get->$key : NULL);
+    return $this->view->processValue($this->get ? (property_exists($this->get, $key) ? $this->get->$key : NULL) : NULL);
   }
 
   protected function post($key = NULL)

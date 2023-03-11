@@ -41,7 +41,10 @@ use system\classes\FormHelper;
             </div>
             <div class="row align-items-center col-9 g-pr-0 <?= $to_warehouse ? 'g-opacity-0_4' : '' ?>" id="to_client_block">
               <label for="to_warehouse" class="col-3">Заказчику</label>
-              <input type="text" class="col-9 form-control g-bg-gray-dark-v3 g-brd-gray-dark-v4 g-color-white" name="to_client" <?= $to_warehouse ? 'disabled' : '' ?> value="<?= FormHelper::getValue('to_client', 'order_form', $order->client ? $order->client->name : '') ?>" />
+              <div class="col-9 d-inline-block" bgchar-dropdown data-dropdown-async="clients">
+                <input type="text" class="form-control g-bg-gray-dark-v3 g-brd-gray-dark-v4 g-color-white" name="to_client" <?= $to_warehouse ? 'disabled' : '' ?> value="<?= FormHelper::getValue('to_client', 'order_form', $order->client ? $order->client->name : '') ?>" />
+                <ul class="g-bg-gray-dark-v4 g-pos-abs p-0"></ul>
+              </div>
             </div>
           </div>
         </div>
