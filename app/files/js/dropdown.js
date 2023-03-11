@@ -37,7 +37,6 @@ if (dropdowns.length) {
           ul = dropdown.querySelector('ul')
 
     merge(fromEvent(input, 'input'), fromEvent(input, 'focus')).pipe(
-      tap(e => console.log(e)),
       filter(e => !(e.type === 'focus' && ul.style.display === 'block')),
       debounceTime(400),
       switchMap(() => fromFetch(data.url(dropdown.querySelector('input').value)))

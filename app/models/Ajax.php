@@ -16,6 +16,7 @@ class Ajax extends QueryBuilder
     return $this->all(['name'], 'clients')
       ->add(" WHERE name LIKE '%{$keyword}%'")
       ->limit(10)
+      ->withEachRow(fn($row) => ['name' => htmlspecialchars_decode($row['name'])])
       ->getRows();
   }
 }
