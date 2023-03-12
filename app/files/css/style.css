@@ -1,6 +1,6 @@
 @font-face {
     font-family: Rubik;
-    src: url(/coursach/app/files/fonts/Rubik-Regular.ttf);
+    src: url(/diploma/app/files/fonts/Rubik-Regular.ttf);
 }
 
 html {
@@ -27,6 +27,17 @@ a, .g-color-primary, .text-primary {
     color: #fdb819 !important;
     text-decoration: none;
     transition: .3s;
+}
+
+.g-color-primary--hover:hover {
+    color: #fdb819 !important;
+}
+
+.g-bg-primary {
+    background-color: #fdb819 !important;
+}
+.g-bg-primary--hover:hover {
+    background-color: #fdb819 !important;
 }
 
 a:not(.btn):hover {
@@ -124,6 +135,10 @@ a svg {
 .g-right-0 {
     right: 0 !important;
 }
+.g-list-style-none {
+    list-style-type: none !important;
+}
+
 .reserve-block .position-absolute {
     min-width: 200px;
 }
@@ -148,4 +163,12 @@ a svg {
 [bgchar-dropdown] li:hover {
     background: #fdb819;
     color: #000;
+}
+
+.card .table tbody:last-child td {
+    border: 0;
+}
+
+.open-details.opened {
+    transform: rotate(180deg);
 }

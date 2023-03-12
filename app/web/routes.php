@@ -49,8 +49,12 @@ return [
   ],
 
   // Ajax API
-  'clients' => [
+  'api/clients' => [
     'controller' => 'ajax',
     'action' => 'clients',
+  ],
+  'api/products' => [
+    'controller' => 'ajax',
+    'action' => 'products',
   ]
 ];

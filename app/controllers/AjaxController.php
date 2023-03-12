@@ -19,4 +19,9 @@ class AjaxController extends Controller
   {
     echo json_encode($this->model->getClients($this->get('keyword')));
   }
+
+  public function productsAction()
+  {
+    echo json_encode($this->model->getProducts($this->get('keyword')));
+  }
 }

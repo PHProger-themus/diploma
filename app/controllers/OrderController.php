@@ -32,6 +32,8 @@ class OrderController extends Controller
     if ($this->isPost()) {
       $data = $this->post();
       $data->to_warehouse = (bool)$this->post('to_warehouse');
+      $data->products = $this->post('products') ?: [];
+      $data->quantity = $this->post('quantity') ?: [];
       $orders = new Order($data);
       $orders->create();
     } else {
@@ -51,6 +53,8 @@ class OrderController extends Controller
     if ($this->isPost()) {
       $data = $this->post();
       $data->to_warehouse = (bool)$this->post('to_warehouse');
+      $data->products = $this->post('products') ?: [];
+      $data->quantity = $this->post('quantity') ?: [];
       $orders = new Order($data);
       $orders->edit($vars->id);
     } else {

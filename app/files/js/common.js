@@ -88,10 +88,27 @@ $(function () {
     }
   })
 
-  $('#to_warehouse_checkbox').on('click', function (e) {
+  $('#to_warehouse_checkbox').on('click', function () {
     $('#to_client_block')[$(this).prop('checked') ? 'addClass' : 'removeClass']('g-opacity-0_4')
     $('#to_client_block input').prop('disabled', $(this).prop('checked'))
   })
+
+  $('.open-details').on('click', function () {
+    const details = $(this).closest('.product').find('.details')
+    details.slideToggle(300)
+    $(this)[$(this).hasClass('opened') ? 'removeClass' : 'addClass']('opened')
+  })
+
+ /*  $('.order_form').on('submit', e => {
+    $('.products-list').each(() => {
+      console.log($(this).find('li').text())
+    })
+    $("<input />").attr("type", "hidden").attr("name", "products[]")
+          .attr("value", "something")
+          .appendTo(".order_form");
+    e.preventDefault()
+    alert('submit')
+  }) */
 })
 
 function showModal(modal, bodyData) {

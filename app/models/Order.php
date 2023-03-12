@@ -29,11 +29,10 @@ class Order extends QueryBuilder // Модель для работы с поль
   public function rules()
   {
     return [
+      'name' => ['required'],
       'to_client' => ['required' => ['if' => function () {
         return true;
       }]],
-      'product' => ['required', 'exists' => ['values' => [$this, 'products', 'ID']]],
-      'quantity' => ['required', 'isNumber'],
     ];
   }
 
@@ -41,9 +40,8 @@ class Order extends QueryBuilder // Модель для работы с поль
   public function fields()
   {
     return [
+      'name' => 'Название',
       'to_client' => 'Заказчику',
-      'product' => 'Товар',
-      'quantity' => 'Кол-во',
       'packed' => 'Упаковано',
     ];
   }
@@ -70,7 +68,10 @@ class Order extends QueryBuilder // Модель для работы с поль
     $rows = $query->getRows();
 
     foreach ($rows as &$row) {
-      $row->product = $this->all([], 'products')->where('ID', $row->product_id)->getRow();
+      $row->products = $this->all(['products.*', 'products_to_order.quantity'], 'products_to_order')
+        ->join('products', ['products_to_order.product_id' => 'products.ID'])
+        ->where('order_id', $row->ID)
+        ->getRows();
       $row->client = $row->client_id ? $this->all([], 'clients')->where('ID', $row->client_id)->getRow() : NULL;
       if ($row->client) {
         $row->client->name = htmlspecialchars_decode(htmlspecialchars_decode($row->client->name));
@@ -83,7 +84,15 @@ class Order extends QueryBuilder // Модель для работы с поль
   {
     if ($this->correct()) {
       $this->processPost();
+      $products = $this->cleanForm->products;
+      $this->cleanOutForm('products');
+      // Заказ
       $this->insert($this->cleanForm);
+      // Товары
+      $orderId = $this->getLastInsertId();
+      foreach ($products as $product) {
+        $this->insert(array_merge(['order_id' => $orderId], $product), 'products_to_order');
+      }
       LinkBuilder::redirect('orders');
     } else {
       $this->backWithError(implode(', ', $this->getErrors()));
@@ -94,7 +103,15 @@ class Order extends QueryBuilder // Модель для работы с поль
   {
     if ($this->correct()) {
       $this->processPost();
+      $products = $this->cleanForm->products;
+      $this->cleanOutForm('products');
+      // Заказ
       $this->update($this->cleanForm)->where('ID', $id)->execute();
+      // Товары
+      $this->delete('products_to_order')->where('order_id', $id)->execute();
+      foreach ($products as $product) {
+        $this->insert(array_merge(['order_id' => $id], $product), 'products_to_order');
+      }
       LinkBuilder::redirect('orders');
     } else {
       $this->backWithError(implode(', ', $this->getErrors()));
@@ -103,9 +120,33 @@ class Order extends QueryBuilder // Модель для работы с поль
 
   private function processPost()
   {
-    $this->cleanForm->product_id = (int)$this->cleanForm->product;
-    unset($this->cleanForm->product);
+    // Товары
+    if (!count($this->cleanForm->products)) {
+      $this->backWithError('Поле "Товары" является обязательным');
+    }
+    if (count($this->cleanForm->products) == count($this->cleanForm->quantity)) {
+      $products = [];
+      for ($i = 0; $i < count($this->cleanForm->products); ++$i) {
+        if ((int)$this->cleanForm->products[$i] < 1 || (int)$this->cleanForm->quantity[$i] < 1) {
+          $this->backWithError('Ошибка при составлении списка товаров. Идентификатор товара или его количество не могут быть меньше 1');
+        } elseif (!$this->all(['ID'], 'products')->where('ID', $this->cleanForm->products[$i])->exists()) {
+          $this->backWithError('Ошибка при составлении списка товаров. Указан несуществующий идентификатор товара');
+        } else {
+          $products[] = [
+            'product_id' => (int)$this->cleanForm->products[$i],
+            'quantity' => (int)$this->cleanForm->quantity[$i]
+          ];
+        }
+      }
+      $this->cleanForm->products = $products;
+    } else {
+      $this->backWithError('Ошибка при составлении списка товаров. Списки идентификаторов и количества различны');
+    }
+
+    // Упакован
     $this->cleanForm->packed = $this->cleanForm->packed ?: null;
+
+    // Заказчик / склад
     if (!$this->cleanForm->to_warehouse) {
       /** @var Client */
       $client = $this->all([], 'clients')->where('name', $this->cleanForm->to_client)->getRow();
@@ -116,10 +157,10 @@ class Order extends QueryBuilder // Модель для работы с поль
         $this->cleanForm->client_id = $client->id;
       }
     } else {
-      $this->cleanForm->client_id = NULL;
+      $this->cleanForm->client_id = null;
     }
-    unset($this->cleanForm->to_warehouse);
-    unset($this->cleanForm->to_client);
+
+    $this->cleanOutForm('quantity', 'to_warehouse', 'to_client');
   }
 
   public function remove($id)
@@ -129,6 +170,12 @@ class Order extends QueryBuilder // Модель для работы с поль
       View::setPopupMessage("Заказ удален");
     } else {
       View::setPopupMessage("Заказа с данным ID не существует", Errors::ERROR);
+    }
+  }
+
+  private function cleanOutForm(...$fields) {
+    foreach($fields as $field) {
+      unset($this->cleanForm->$field);
     }
   }
 }
